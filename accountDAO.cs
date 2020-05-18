@@ -35,5 +35,23 @@ namespace Database1.DAO
             conn.Close();
             return user1;
         }
+        public User BalanceCheck(int UserID)
+        {
+            conn.Open();
+            string BalanceCheckQuery = " SELECT TotAmount FROM Bank where UserID = " + UserID;
+            MySqlCommand view = new MySqlCommand(BalanceCheckQuery, conn);
+            MySqlDataReader reader = view.ExecuteReader();
+            int[] Balance = new int[1];
+            User user2 = new User();
+            while (reader.Read())
+            {
+
+                Balance[0] = reader.GetInt32(0);
+            }
+
+            conn.Close();
+            Console.WriteLine("Your Balance is : " + Balance[0]);
+            return user2;
+        }
     }
 }

@@ -101,21 +101,23 @@ namespace Database1.Banks
                 MySqlCommand view = new MySqlCommand(BalanceCheckSelectQuery, conn);
                 conn.Open();
                 MySqlDataReader reader = view.ExecuteReader();
+                Console.WriteLine("Outside 1st while");
+
                 while (reader.Read())
                 {
+                    Console.WriteLine("inside 1st while");
                     int[] TotAmount = new int[1];
-                    TotAmount[0] = reader.GetInt32(0);
-                    TotAmount[0] = TotAmount[0] + DepositAmount;
-                    Console.WriteLine(TotAmount[0]);
-                    string BalanceCheckQuery = "UPDATE Bank SET TotAmount = " + TotAmount[0] + "WHERE UserID =" + currentuser.UserID;
-                    MySqlCommand view1 = new MySqlCommand(BalanceCheckQuery, conn);
+                    string BalanceCheckQuery = "UPDATE bank SET TotAmount = " + TotAmount + "WHERE UserID =" + currentuser.UserID;
+                    MySqlCommand views = new MySqlCommand(BalanceCheckQuery, conn);
                     while (reader.Read())
                     {
-                        Console.WriteLine("Inside while 2");
+                        Console.WriteLine("inside 2st while");
+                        Console.Write(TotAmount[0] = reader.GetInt32(0));
+                        Console.WriteLine("Tot:" + TotAmount[0]);
                     }
                 }
                 conn.Close();
-                Console.WriteLine("Deposited Successfully !");
+                Console.WriteLine("Deposited Succefully !");
             }
             catch (Exception e)
             {
@@ -137,24 +139,7 @@ namespace Database1.Banks
         {
             try
             {
-                MySqlConnection conn;
-                string myConnectionString;
-                myConnectionString = "server=127.0.0.1;uid=root;" + "pwd=MySQLRoot19@;database=BankAPP";
-                conn = new MySqlConnection();
-                conn.ConnectionString = myConnectionString;
-                string BalanceCheckQuery = " SELECT TotAmount FROM Bank where UserID = " + currentuser.UserID;
-                MySqlCommand view = new MySqlCommand(BalanceCheckQuery, conn);
-                conn.Open();
-                MySqlDataReader reader = view.ExecuteReader();
-                int[] Balance = new int[1];
-                while (reader.Read())
-                {
-
-                    Balance[0] = reader.GetInt32(0);
-                }
-
-                conn.Close();
-                Console.WriteLine("Your Balance is : " + Balance[0]);
+                User User2 = this.accountdao.BalanceCheck(UserID);
             }
             catch (Exception e)
             {
@@ -173,9 +158,4 @@ namespace Database1.Banks
         }
 
     }
-
-
-
-
-
 }
