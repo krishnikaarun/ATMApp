@@ -19,7 +19,7 @@ namespace Database1.Banks
         public static void HomePage()
         {
             Console.WriteLine("\t\t--------------------------------------------");
-            Console.WriteLine("\t\t|          C ATM BANK LIMITED              |");
+            Console.WriteLine("\t\t|          C ATM BANK LIMITED    {0}       |");
             Console.WriteLine("\t\t|           Customer Banking               |");
             Console.WriteLine("\t\t|    1. Deposit Funds                      |");
             Console.WriteLine("\t\t|    2. Withdraw Funds                     |");
@@ -36,93 +36,91 @@ namespace Database1.Banks
         //main operation funtion
         public void MainAtm()
         {
-            Console.Write("UserID: ");
-            UserID = Convert.ToInt32(Console.ReadLine());
-            Console.Write("PIN: ");
-            PIN = Convert.ToInt32(Console.ReadLine());
-            User User1 = this.accountdao.Login(UserID, PIN);
-            if (User1 != null)
+            try
             {
-                Console.Clear();
-                Console.WriteLine("Welcome {0}!", User1.UserName);
-                HomePage();
-                int op;
-                op = Convert.ToInt32(Console.ReadLine());
-
-                switch (op)
+                Console.Write("UserID: ");
+                UserID = Convert.ToInt32(Console.ReadLine());
+                Console.Write("PIN: ");
+                PIN = Convert.ToInt32(Console.ReadLine());
+                User User1 = this.accountdao.Login(UserID, PIN);
+                if (User1.UserID != 0)
                 {
-                    case 1:
-                        Deposit(User1);
-                        break;
-                    case 2:
-                        Withdraw();
-                        break;
-                    case 3:
-                        Transfer();
-                        break;
-                    case 4:
-                        CheckBalance(User1);
-                        break;
-                    case 5:
-                        Transaction();
-                        break;
-                    case 6:
-                        ChangePin();
-                        break;
+                    Console.Clear();
+                    Console.WriteLine("Welcome {0}!", User1.UserName);
+                    HomePage();
+                    int op;
+                    op = Convert.ToInt32(Console.ReadLine());
 
-                    case 7:
-                        Console.WriteLine("LoggedOut");
-                        break;
-                    default:
-                        Console.WriteLine("Enter a Vaild Input!");
-                        break;
+                    switch (op)
+                    {
+                        case 1:
+                            try
+                            {
+                                int DepositAmount = 0;
+                                Console.Write("Enter the amount to Deposit: ");
+                                DepositAmount = Convert.ToInt32(Console.ReadLine());
+                                User User3 = this.accountdao.Deposit(UserID, DepositAmount);
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine("Error in Deposit!: " + e.Message);
+                            }
+                            break;
+                        case 2:
+                            Withdraw();
+                            break;
+                        case 3:
+                            Transfer();
+                            break;
+                        case 4:
+                            try
+                            {
+                                User User2 = this.accountdao.BalanceCheck(UserID);
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine("Error in BalanceCheck!: " + e.Message);
+                            }
+                            break;
+                        case 5:
+                            Transaction();
+                            break;
+                        case 6:
+                            try
+                            {
+                                int NewPIN = 0;
+                                Console.Write("Enter the NewPIN: ");
+                                NewPIN = Convert.ToInt32(Console.ReadLine());
+                                User User4 = this.accountdao.PINChange(UserID, NewPIN);
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine("Error in PINChange: " + e.Message);
+                            }
+                            break;
+
+                        case 7:
+                            Console.WriteLine("LoggedOut");
+                            break;
+                        default:
+                            Console.WriteLine("Enter a Vaild Input!");
+                            break;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Incorrect UserID or Password!!!");
                 }
             }
-            else
+            catch (Exception e)
             {
-                Console.WriteLine("Incorrect UserID or Password!!!");
+                Console.WriteLine(e.Message);
             }
-
 
         }
         public static void Deposit(User currentuser)
         {
-            try
-            {
-                int DepositAmount = 0;
-                Console.Write("Enter the amount to Deposit: ");
-                DepositAmount = Convert.ToInt32(Console.ReadLine());
-                MySqlConnection conn;
-                string myConnectionString;
-                myConnectionString = "server=127.0.0.1;uid=root;" + "pwd=MySQLRoot19@;database=BankAPP";
-                conn = new MySqlConnection();
-                conn.ConnectionString = myConnectionString;
-                string BalanceCheckSelectQuery = "SELECT TotAmount FROM Bank WHERE UserID =" + currentuser.UserID;
-                MySqlCommand view = new MySqlCommand(BalanceCheckSelectQuery, conn);
-                conn.Open();
-                MySqlDataReader reader = view.ExecuteReader();
-                Console.WriteLine("Outside 1st while");
-
-                while (reader.Read())
-                {
-                    Console.WriteLine("inside 1st while");
-                    int[] TotAmount = new int[1];
-                    string BalanceCheckQuery = "UPDATE bank SET TotAmount = " + TotAmount + "WHERE UserID =" + currentuser.UserID;
-                    MySqlCommand views = new MySqlCommand(BalanceCheckQuery, conn);
-                    while (reader.Read())
-                    {
-                        Console.WriteLine("inside 2st while");
-                        Console.Write(TotAmount[0] = reader.GetInt32(0));
-                        Console.WriteLine("Tot:" + TotAmount[0]);
-                    }
-                }
-                conn.Close();
-                Console.WriteLine("Deposited Succefully !");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Error: " + e.Message);
-            }
+           
         }
 
         public static void Withdraw()
@@ -137,14 +135,7 @@ namespace Database1.Banks
 
         public void CheckBalance(User currentuser)
         {
-            try
-            {
-                User User2 = this.accountdao.BalanceCheck(UserID);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Error: " + e.Message);
-            }
+           
         }
 
         public static void Transaction()

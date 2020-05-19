@@ -15,7 +15,6 @@ namespace Database1
             b1.MainAtm();
             Console.ReadKey();
         }
-
     }
 
 }
