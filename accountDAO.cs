@@ -56,38 +56,102 @@ namespace Database1.DAO
             Console.WriteLine("Your Balance is : " + Balance[0]);
             return user2;
         }
+
+
         public User Deposit(int UserID, int DepositAmount)
         {
-            string BalanceCheckSelectQuery = "SELECT TotAmount FROM Bank WHERE UserID =" + UserID;
-            MySqlCommand view = new MySqlCommand(BalanceCheckSelectQuery, conn);
+            
+            string selectBankQuery = "SELECT TotAmount FROM Bank WHERE UserID =" + UserID;
+            MySqlCommand view = new MySqlCommand(selectBankQuery, conn);
             conn.Open();
             MySqlDataReader reader = view.ExecuteReader();
             User user3 = new User();
+            
+            while (reader.Read())
+            {
+                int[] TotAmount = new int[1];
+                TotAmount[0] = reader.GetInt32(0);               
+                TotAmount[0] = TotAmount[0] + DepositAmount;
+
+                Console.WriteLine(TotAmount[0]);
+
+                conn.Close();
+                User User31 = UpdateDeposit(UserID, TotAmount[0]);
+
+            }
+
+            return user3;                   
+        }
+        public User UpdateDeposit(int UserID, int TotAmount)
+        {
+            string UpdateDepositQuery = "UPDATE  Bank SET TotAmount =" + TotAmount + " where UserID = " + UserID;
+
+            MySqlCommand updateCommand = new MySqlCommand(UpdateDepositQuery, conn);
+
+            conn.Open();
+            MySqlDataReader reader2 = updateCommand.ExecuteReader();
+            User user31 = new User();
+            conn.Close();
+            Console.WriteLine("You Deposited Successfully...");
+            return user31;
+
+        }
+
+        public User PINChange(int UserID, int NewPIN)
+        {
+            string NewPINChangeQuery = "UPDATE  Customers SET Pin=" + NewPIN + " where UserID = " + UserID;
+            MySqlCommand updateCommand = new MySqlCommand(NewPINChangeQuery, conn);
+
+            conn.Open();
+            MySqlDataReader reader = updateCommand.ExecuteReader();
+            User user4 = new User();
+
+            conn.Close();
+            Console.WriteLine("You Changed your PIN Successfully...");
+            return user4;
+         }
+        public User Withdraw(int UserID, int WithdrawAmount)
+        {
+
+            string selectBankQuery = "SELECT TotAmount FROM Bank WHERE UserID =" + UserID;
+            MySqlCommand view = new MySqlCommand(selectBankQuery, conn);
+            conn.Open();
+            MySqlDataReader reader = view.ExecuteReader();
+            User user5 = new User();
+
             while (reader.Read())
             {
                 int[] TotAmount = new int[1];
                 TotAmount[0] = reader.GetInt32(0);
-                TotAmount[0] = TotAmount[0] + DepositAmount;
-                Console.WriteLine(TotAmount[0]);
-                string BalanceCheckQuery = "UPDATE Bank SET TotAmount ="+TotAmount[0]+"WHERE UserID =" + UserID;
-                MySqlCommand views = new MySqlCommand(BalanceCheckQuery, conn);
-                if (reader.Read())
+                conn.Close();
+
+                if (WithdrawAmount <= TotAmount[0])
                 {
-                    Console.WriteLine("Updated Amount"+TotAmount[0]);
-                }
+                    TotAmount[0] = TotAmount[0] - WithdrawAmount;
+                    Console.WriteLine(TotAmount[0]);
+                    User User51 = UpdateWithdraw(UserID, TotAmount[0]);
+                }               
+
             }
-            conn.Close();
-            Console.WriteLine("Deposited Successfully !");
-            return user3;
+
+            return user5;
         }
-        public User PINChange(int UserID, int NewPIN)
+        public User UpdateWithdraw(int UserID, int TotAmount)
         {
+            string UpdateWithdrawQuery = "UPDATE  Bank SET TotAmount =" + TotAmount + " where UserID = " + UserID;
+
+            MySqlCommand updateCommand = new MySqlCommand(UpdateWithdrawQuery, conn);
+
             conn.Open();
-            string selectNewPINChagneQuery = " UPDATE Customers SET PIN = " + NewPIN + "where UserID = " + UserID; ;
-            MySqlCommand Upadtecommand = new MySqlCommand(selectNewPINChagneQuery, conn);
-            User user4 = new User();
+            MySqlDataReader reader2 = updateCommand.ExecuteReader();
+
             conn.Close();
-            return user4;
+            User user51 = new User();
+
+            Console.WriteLine("You Withdrawl was Successful...");
+            return user51;
         }
+        
+       
     }
 }

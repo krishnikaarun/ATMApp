@@ -18,8 +18,9 @@ namespace Database1.Banks
         }
         public static void HomePage()
         {
+            DateTime now = DateTime.Now;
             Console.WriteLine("\t\t--------------------------------------------");
-            Console.WriteLine("\t\t|          C ATM BANK LIMITED    {0}       |");
+            Console.WriteLine("\t\t|          C ATM BANK LIMITED              |");
             Console.WriteLine("\t\t|           Customer Banking               |");
             Console.WriteLine("\t\t|    1. Deposit Funds                      |");
             Console.WriteLine("\t\t|    2. Withdraw Funds                     |");
@@ -29,6 +30,7 @@ namespace Database1.Banks
             Console.WriteLine("\t\t|    6. Change Pin                         |");
             Console.WriteLine("\t\t|                                          |");
             Console.WriteLine("\t\t|    7.Save & Exit                         |");
+            Console.WriteLine("\t\t|    Login Time:  {0}   |", now.ToLocalTime());
             Console.WriteLine("\t\t--------------------------------------------");
             Console.Write("Enter your option: ");
         }
@@ -67,10 +69,31 @@ namespace Database1.Banks
                             }
                             break;
                         case 2:
-                            Withdraw();
+                            try
+                            {
+                                int WithdrawAmount = 0;
+                                Console.Write("Enter the amount to withdraw: ");
+                                WithdrawAmount = Convert.ToInt32(Console.ReadLine());
+                                if (WithdrawAmount > 0)
+                                {
+                                    User User5 = this.accountdao.Withdraw(UserID, WithdrawAmount);
+
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine("Error in Withdraw!: " + e.Message);
+                            }
                             break;
                         case 3:
-                            Transfer();
+                            try
+                            {
+                                User User6 = this.accountdao.Transfer(UserID,ToAccount,TransferAmount);
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine("Error in Transfer!: " + e.Message);
+                            }
                             break;
                         case 4:
                             try

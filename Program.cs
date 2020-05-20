@@ -1,8 +1,5 @@
 ﻿using System;
 using Database1.Banks;
-using System.Linq;
-using System.Data.SqlClient;
-using System.Data;
 
 namespace Database1
 {
