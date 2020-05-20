@@ -61,11 +61,12 @@ namespace Database1.Banks
                                 int DepositAmount = 0;
                                 Console.Write("Enter the amount to Deposit: ");
                                 DepositAmount = Convert.ToInt32(Console.ReadLine());
-                                User User3 = this.accountdao.Deposit(UserID, DepositAmount);
+                                this.accountdao.Deposit(UserID, DepositAmount);
+                                Console.WriteLine("Deposit is Sucessful !");
                             }
                             catch (Exception e)
                             {
-                                Console.WriteLine("Error in Deposit!: " + e.Message);
+                                Console.WriteLine("Error in Deposit !: " + e.Message);
                             }
                             break;
                         case 2:
@@ -76,19 +77,20 @@ namespace Database1.Banks
                                 WithdrawAmount = Convert.ToInt32(Console.ReadLine());
                                 if (WithdrawAmount > 0)
                                 {
-                                    User User5 = this.accountdao.Withdraw(UserID, WithdrawAmount);
+                                    this.accountdao.Withdraw(UserID, WithdrawAmount);
+                                    Console.WriteLine("Withdraw is Sucessful !");
 
                                 }
                             }
                             catch (Exception e)
                             {
-                                Console.WriteLine("Error in Withdraw!: " + e.Message);
+                                Console.WriteLine("Error in Withdraw !: " + e.Message);
                             }
                             break;
                         case 3:
                             try
                             {
-                                User User6 = this.accountdao.Transfer(UserID,ToAccount,TransferAmount);
+                                //this.accountdao.Transfer(UserID,ToAccount,TransferAmount);
                             }
                             catch (Exception e)
                             {
@@ -114,7 +116,7 @@ namespace Database1.Banks
                                 int NewPIN = 0;
                                 Console.Write("Enter the NewPIN: ");
                                 NewPIN = Convert.ToInt32(Console.ReadLine());
-                                User User4 = this.accountdao.PINChange(UserID, NewPIN);
+                                this.accountdao.PINChange(UserID, NewPIN);
                             }
                             catch (Exception e)
                             {

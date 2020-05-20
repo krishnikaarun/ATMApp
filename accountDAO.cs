@@ -58,100 +58,59 @@ namespace Database1.DAO
         }
 
 
-        public User Deposit(int UserID, int DepositAmount)
-        {
-            
+        public void Deposit(int UserID, int DepositAmount)
+        {            
             string selectBankQuery = "SELECT TotAmount FROM Bank WHERE UserID =" + UserID;
             MySqlCommand view = new MySqlCommand(selectBankQuery, conn);
             conn.Open();
-            MySqlDataReader reader = view.ExecuteReader();
-            User user3 = new User();
-            
-            while (reader.Read())
+            MySqlDataReader reader = view.ExecuteReader();            
+            if (reader.Read())
             {
                 int[] TotAmount = new int[1];
-                TotAmount[0] = reader.GetInt32(0);               
+                TotAmount[0] = reader.GetInt32(0);
                 TotAmount[0] = TotAmount[0] + DepositAmount;
-
-                Console.WriteLine(TotAmount[0]);
-
                 conn.Close();
-                User User31 = UpdateDeposit(UserID, TotAmount[0]);
+                UpdateAmount(UserID, TotAmount[0]);
 
-            }
-
-            return user3;                   
-        }
-        public User UpdateDeposit(int UserID, int TotAmount)
-        {
-            string UpdateDepositQuery = "UPDATE  Bank SET TotAmount =" + TotAmount + " where UserID = " + UserID;
-
-            MySqlCommand updateCommand = new MySqlCommand(UpdateDepositQuery, conn);
-
-            conn.Open();
-            MySqlDataReader reader2 = updateCommand.ExecuteReader();
-            User user31 = new User();
-            conn.Close();
-            Console.WriteLine("You Deposited Successfully...");
-            return user31;
-
+            }                  
         }
 
-        public User PINChange(int UserID, int NewPIN)
+        public void PINChange(int UserID, int NewPIN)
         {
             string NewPINChangeQuery = "UPDATE  Customers SET Pin=" + NewPIN + " where UserID = " + UserID;
             MySqlCommand updateCommand = new MySqlCommand(NewPINChangeQuery, conn);
-
             conn.Open();
             MySqlDataReader reader = updateCommand.ExecuteReader();
-            User user4 = new User();
-
             conn.Close();
             Console.WriteLine("You Changed your PIN Successfully...");
-            return user4;
          }
-        public User Withdraw(int UserID, int WithdrawAmount)
-        {
 
+        public void Withdraw(int UserID, int WithdrawAmount)
+        {
             string selectBankQuery = "SELECT TotAmount FROM Bank WHERE UserID =" + UserID;
             MySqlCommand view = new MySqlCommand(selectBankQuery, conn);
             conn.Open();
             MySqlDataReader reader = view.ExecuteReader();
-            User user5 = new User();
-
-            while (reader.Read())
+            if (reader.Read())
             {
                 int[] TotAmount = new int[1];
                 TotAmount[0] = reader.GetInt32(0);
                 conn.Close();
-
                 if (WithdrawAmount <= TotAmount[0])
                 {
                     TotAmount[0] = TotAmount[0] - WithdrawAmount;
                     Console.WriteLine(TotAmount[0]);
-                    User User51 = UpdateWithdraw(UserID, TotAmount[0]);
-                }               
-
+                    UpdateAmount(UserID, TotAmount[0]);
+                }
             }
-
-            return user5;
         }
-        public User UpdateWithdraw(int UserID, int TotAmount)
+        public void UpdateAmount(int UserID, int TotAmount)
         {
             string UpdateWithdrawQuery = "UPDATE  Bank SET TotAmount =" + TotAmount + " where UserID = " + UserID;
-
             MySqlCommand updateCommand = new MySqlCommand(UpdateWithdrawQuery, conn);
-
             conn.Open();
-            MySqlDataReader reader2 = updateCommand.ExecuteReader();
-
+            int RowCount = updateCommand.ExecuteNonQuery();
             conn.Close();
-            User user51 = new User();
-
-            Console.WriteLine("You Withdrawl was Successful...");
-            return user51;
         }
-        
-       
     }
 }
