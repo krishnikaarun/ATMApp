@@ -48,7 +48,6 @@ namespace Database1.DAO
             User user2 = new User();
             while (reader.Read())
             {
-
                 Balance[0] = reader.GetInt32(0);
             }
 
@@ -71,6 +70,7 @@ namespace Database1.DAO
                 TotAmount[0] = TotAmount[0] + DepositAmount;
                 conn.Close();
                 UpdateAmount(UserID, TotAmount[0]);
+                InsertDepositTrans(UserID, TotAmount[0]);
 
             }                  
         }
@@ -101,13 +101,51 @@ namespace Database1.DAO
                     TotAmount[0] = TotAmount[0] - WithdrawAmount;
                     Console.WriteLine(TotAmount[0]);
                     UpdateAmount(UserID, TotAmount[0]);
+                    InsertWithdrawTrans(UserID, TotAmount[0]);
+
                 }
             }
         }
         public void UpdateAmount(int UserID, int TotAmount)
         {
-            string UpdateWithdrawQuery = "UPDATE  Bank SET TotAmount =" + TotAmount + " where UserID = " + UserID;
-            MySqlCommand updateCommand = new MySqlCommand(UpdateWithdrawQuery, conn);
+            string UpdateQuery = "UPDATE  Bank SET TotAmount =" + TotAmount + " where UserID = " + UserID;
+            MySqlCommand updateCommand = new MySqlCommand(UpdateQuery, conn);
+            conn.Open();
+            int RowCount = updateCommand.ExecuteNonQuery();
+            conn.Close();
+        }
+        public void InsertDepositTrans(int UserID, int TotAmount)
+        {
+            string selectTransQuery = "SELECT AccountNo from Trans Where UserID=" +UserID;
+            MySqlCommand view = new MySqlCommand(selectTransQuery, conn);
+            conn.Open();
+            MySqlDataReader reader = view.ExecuteReader();
+            int[] AccountNo = new int[1];
+            if (reader.Read())
+            {
+                AccountNo[0] = reader.GetInt32(0);
+            }
+            conn.Close();
+            string InsertTransQuery = "INSERT INTO Trans (CD,Amount,AccountNo,UserID) VALUES ('C',"+TotAmount+","+AccountNo[0]+","+UserID+")";
+            MySqlCommand updateCommand = new MySqlCommand(InsertTransQuery, conn);
+            conn.Open();
+            int RowCount = updateCommand.ExecuteNonQuery();
+            conn.Close();
+        }
+        public void InsertWithdrawTrans(int UserID, int TotAmount)
+        {
+            string selectTransQuery = "SELECT AccountNo from Trans Where UserID=" + UserID;
+            MySqlCommand view = new MySqlCommand(selectTransQuery, conn);
+            conn.Open();
+            MySqlDataReader reader = view.ExecuteReader();
+            int[] AccountNo = new int[1];
+            if (reader.Read())
+            {
+                AccountNo[0] = reader.GetInt32(0);
+            }
+            conn.Close();
+            string InsertTransQuery = "INSERT INTO Trans (CD,Amount,AccountNo,UserID) VALUES ('D'," + TotAmount + "," + AccountNo[0] + "," + UserID + ")";
+            MySqlCommand updateCommand = new MySqlCommand(InsertTransQuery, conn);
             conn.Open();
             int RowCount = updateCommand.ExecuteNonQuery();
             conn.Close();
