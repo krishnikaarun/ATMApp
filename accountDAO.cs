@@ -50,12 +50,10 @@ namespace Database1.DAO
             {
                 Balance[0] = reader.GetInt32(0);
             }
-
             conn.Close();
             Console.WriteLine("Your Balance is : " + Balance[0]);
             return user2;
         }
-
 
         public void Deposit(int UserID, int DepositAmount)
         {            
@@ -106,6 +104,7 @@ namespace Database1.DAO
                 }
             }
         }
+
         public void UpdateAmount(int UserID, int TotAmount)
         {
             string UpdateQuery = "UPDATE  Bank SET TotAmount =" + TotAmount + " where UserID = " + UserID;
@@ -114,6 +113,7 @@ namespace Database1.DAO
             int RowCount = updateCommand.ExecuteNonQuery();
             conn.Close();
         }
+
         public void InsertDepositTrans(int UserID, int TotAmount)
         {
             string selectTransQuery = "SELECT AccountNo from Trans Where UserID=" +UserID;
@@ -132,6 +132,7 @@ namespace Database1.DAO
             int RowCount = updateCommand.ExecuteNonQuery();
             conn.Close();
         }
+
         public void InsertWithdrawTrans(int UserID, int TotAmount)
         {
             string selectTransQuery = "SELECT AccountNo from Trans Where UserID=" + UserID;
@@ -150,5 +151,35 @@ namespace Database1.DAO
             int RowCount = updateCommand.ExecuteNonQuery();
             conn.Close();
         }
+
+        /*
+          public Transaction[] Transactions(int UserID)
+        {
+
+            string countQuery = "SELECT  COUNT(*) FROM Transactions WHERE UserID = " + UserID;
+            MySqlCommand countCommand = new MySqlCommand(countQuery, conn);
+            conn.Open();
+            Int64 num2 = (Int64)countCommand.ExecuteScalar();
+            Transaction[] transactions = new Transaction[num2];
+            string tranQuery = "SELECT  TransID, CD, Amount, AccountNo, UserID FROM Trans WHERE UserID = " + UserID;
+            MySqlCommand selectCommand = new MySqlCommand(tranQuery, conn);
+            MySqlDataReader reader = selectCommand.ExecuteReader();
+            Console.WriteLine("tranID AccountNO Trantype TranAmount Balance");
+            while (reader.Read())
+            {
+                Transaction Tran = new Transaction();
+                Tran.TransID = reader.GetInt32(0);
+                Tran.CD = reader.GetInt32(0);
+                Tran.Amount = reader.GetInt32(0);
+                Tran.AccountNo = reader.GetInt32(1);
+                Tran.UserID = reader.GetString(2);
+                transactions[i] = Tran;
+                Console.WriteLine("  " + Tran.TranID + "     " + Tran.AccountNO + "    " + Tran.TranType + "      " + Tran.TranAmount + "      " + Tran.Balance);
+                i++;
+            }     
+            return transactions;
+            conn.Close();
+        }        
+        */
     }
 }

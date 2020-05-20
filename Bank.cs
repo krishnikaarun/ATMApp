@@ -10,7 +10,7 @@ namespace Database1.Banks
 {
     public class Bank
     {
-        public int UserID = 0, PIN = 0, UserName = 0;
+        public int UserID = 0, PIN = 0, UserName = 0, UserID2 = 0, ToAmount = 0;
         AccountDAO accountdao;
         public Bank()
         {
@@ -62,7 +62,7 @@ namespace Database1.Banks
                                 Console.Write("Enter the amount to Deposit: ");
                                 DepositAmount = Convert.ToInt32(Console.ReadLine());
                                 this.accountdao.Deposit(UserID, DepositAmount);
-                                Console.WriteLine("Deposit is Sucessful !");
+                                Console.WriteLine("Deposit is Successful !");
                             }
                             catch (Exception e)
                             {
@@ -78,7 +78,7 @@ namespace Database1.Banks
                                 if (WithdrawAmount > 0)
                                 {
                                     this.accountdao.Withdraw(UserID, WithdrawAmount);
-                                    Console.WriteLine("Withdraw is Sucessful !");
+                                    Console.WriteLine("Withdraw is Successful !");
 
                                 }
                             }
@@ -90,7 +90,13 @@ namespace Database1.Banks
                         case 3:
                             try
                             {
-                               // this.accountdao.Transfer(UserID,ToAccount,TransferAmount);
+                                Console.Write("Enter the UserID to which Amount must be transferd :");
+                                UserID2 = Convert.ToInt32(Console.ReadLine());
+                                Console.Write("Enter the Amount to transfer :");
+                                ToAmount = Convert.ToInt32(Console.ReadLine());
+                                //this.accountdao.Transfer(UserID,UserID2,ToAmount);
+                                this.accountdao.Withdraw(UserID, ToAmount);
+                                this.accountdao.Deposit(UserID2, ToAmount);
                             }
                             catch (Exception e)
                             {
@@ -108,6 +114,7 @@ namespace Database1.Banks
                             }
                             break;
                         case 5:
+                            //User User5 = this.accountdao.Transation[] Transations (UserID);
                             Transaction();
                             break;
                         case 6:
@@ -115,7 +122,7 @@ namespace Database1.Banks
                             {
                                 int NewPIN = 0;
                                 Console.Write("Enter the NewPIN: ");
-                                NewPIN = Convert.ToInt32(Console.ReadLine());
+                                NewPIN = Convert.ToInt32(Console.Read());
                                 this.accountdao.PINChange(UserID, NewPIN);
                             }
                             catch (Exception e)
@@ -125,12 +132,14 @@ namespace Database1.Banks
                             break;
 
                         case 7:
-                            Console.WriteLine("LoggedOut");
+                            Console.WriteLine("You are Logged out Successfully!");
                             break;
                         default:
                             Console.WriteLine("Enter a Vaild Input!");
                             break;
+
                     }
+                    MainAtm();
                 }
                 else
                 {
