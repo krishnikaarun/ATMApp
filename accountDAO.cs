@@ -126,7 +126,7 @@ namespace Database1.DAO
                 AccountNo[0] = reader.GetInt32(0);
             }
             conn.Close();
-            string InsertTransQuery = "INSERT INTO Trans (CD,Amount,AccountNo,UserID) VALUES ('C',"+TotAmount+","+AccountNo[0]+","+UserID+")";
+            string InsertTransQuery = "INSERT INTO Trans (CD,Amount,AccountNo,UserID) VALUES (1,"+TotAmount+","+AccountNo[0]+","+UserID+")";
             MySqlCommand updateCommand = new MySqlCommand(InsertTransQuery, conn);
             conn.Open();
             int RowCount = updateCommand.ExecuteNonQuery();
@@ -145,41 +145,37 @@ namespace Database1.DAO
                 AccountNo[0] = reader.GetInt32(0);
             }
             conn.Close();
-            string InsertTransQuery = "INSERT INTO Trans (CD,Amount,AccountNo,UserID) VALUES ('D'," + TotAmount + "," + AccountNo[0] + "," + UserID + ")";
+            string InsertTransQuery = "INSERT INTO Trans (CD,Amount,AccountNo,UserID) VALUES (0," + TotAmount + "," + AccountNo[0] + "," + UserID + ")";
             MySqlCommand updateCommand = new MySqlCommand(InsertTransQuery, conn);
             conn.Open();
             int RowCount = updateCommand.ExecuteNonQuery();
             conn.Close();
         }
-
-        /*
-          public Transaction[] Transactions(int UserID)
+        public User[] Transact(int UserID)
         {
-
-            string countQuery = "SELECT  COUNT(*) FROM Transactions WHERE UserID = " + UserID;
-            MySqlCommand countCommand = new MySqlCommand(countQuery, conn);
+            int i = 0;
+            string countTransQuery = "SELECT COUNT(*) FROM Trans WHERE UserID = " + UserID;
+            MySqlCommand countCommand = new MySqlCommand(countTransQuery, conn);
             conn.Open();
-            Int64 num2 = (Int64)countCommand.ExecuteScalar();
-            Transaction[] transactions = new Transaction[num2];
-            string tranQuery = "SELECT  TransID, CD, Amount, AccountNo, UserID FROM Trans WHERE UserID = " + UserID;
-            MySqlCommand selectCommand = new MySqlCommand(tranQuery, conn);
+            Int64 n = (Int64)countCommand.ExecuteScalar();
+            User[] Tran1 = new User[n];
+            string TransLogQuery = "SELECT TransID, CD, Amount, AccountNo, UserID FROM Trans WHERE UserID = " + UserID;
+            MySqlCommand selectCommand = new MySqlCommand(TransLogQuery, conn);
             MySqlDataReader reader = selectCommand.ExecuteReader();
-            Console.WriteLine("tranID AccountNO Trantype TranAmount Balance");
+            Console.WriteLine("  TranID     CD     Amount      AccountNo");
             while (reader.Read())
             {
-                Transaction Tran = new Transaction();
+                User Tran = new User();
                 Tran.TransID = reader.GetInt32(0);
-                Tran.CD = reader.GetInt32(0);
-                Tran.Amount = reader.GetInt32(0);
-                Tran.AccountNo = reader.GetInt32(1);
-                Tran.UserID = reader.GetString(2);
-                transactions[i] = Tran;
-                Console.WriteLine("  " + Tran.TranID + "     " + Tran.AccountNO + "    " + Tran.TranType + "      " + Tran.TranAmount + "      " + Tran.Balance);
+                Tran.CD = reader.GetInt32(1);
+                Tran.Amount = reader.GetInt32(2);
+                Tran.AccountNo = reader.GetInt32(3);
+                Tran1[i] = Tran;
+                Console.WriteLine("  " + Tran.TransID + "      " + Tran.CD + "      " + Tran.Amount + "      " + Tran.AccountNo);
                 i++;
-            }     
-            return transactions;
+            }
             conn.Close();
+            return Tran1;
         }        
-        */
     }
 }

@@ -50,8 +50,7 @@ namespace Database1.Banks
                     Console.Clear();
                     Console.WriteLine("Welcome {0}!", User1.UserName);
                     HomePage();
-                    int op;
-                    op = Convert.ToInt32(Console.ReadLine());
+                    int op = Convert.ToInt32(Console.ReadLine());
 
                     switch (op)
                     {
@@ -94,7 +93,6 @@ namespace Database1.Banks
                                 UserID2 = Convert.ToInt32(Console.ReadLine());
                                 Console.Write("Enter the Amount to transfer :");
                                 ToAmount = Convert.ToInt32(Console.ReadLine());
-                                //this.accountdao.Transfer(UserID,UserID2,ToAmount);
                                 this.accountdao.Withdraw(UserID, ToAmount);
                                 this.accountdao.Deposit(UserID2, ToAmount);
                             }
@@ -114,8 +112,7 @@ namespace Database1.Banks
                             }
                             break;
                         case 5:
-                            //User User5 = this.accountdao.Transation[] Transations (UserID);
-                            Transaction();
+                            User[] tran3 = this.accountdao.Transact(UserID);
                             break;
                         case 6:
                             try
@@ -132,7 +129,7 @@ namespace Database1.Banks
                             break;
 
                         case 7:
-                            Console.WriteLine("You are Logged out Successfully!");
+                            Console.WriteLine("You Logged out Successfully!");
                             break;
                         default:
                             Console.WriteLine("Enter a Vaild Input!");
