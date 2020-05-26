@@ -1,4 +1,5 @@
-﻿namespace Database1.Model
+﻿
+namespace Database1.Model
 {
     public class User
     {
@@ -10,10 +11,12 @@
 
         public int TransID { get; set; }
 
-        public int CD { get; set; }
+        public string CD { get; set; }
 
         public int Amount { get; set; }
 
         public int AccountNo { get; set; }
+
+        public string Dated { get; set; }
     }
 }

@@ -5,6 +5,8 @@ using System.Data;
 using MySql.Data.MySqlClient;
 using Database1.DAO;
 using Database1.Model;
+using Microsoft.Extensions.Configuration;
+using System.IO;
 
 namespace Database1.DAO
 {
@@ -14,13 +16,15 @@ namespace Database1.DAO
         string myConnectionString;
         public AccountDAO()
         {
-            myConnectionString = "server=127.0.0.1;uid=root;" + "pwd=MySQLRoot19@;database=BankAPP";
+            IConfiguration Configuration = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            .AddEnvironmentVariables()
+            .Build();
+            var section = Configuration.GetSection("ConnectionString");
+            myConnectionString = section.Value;
             conn = new MySqlConnection();
             conn.ConnectionString = myConnectionString;
-        }
-        ~AccountDAO()
-        {
-            Console.WriteLine("End");
+        
         }
         public User Login(int UserID, int PIN)
 
@@ -38,29 +42,27 @@ namespace Database1.DAO
             conn.Close();
             return user1;
         }
-        public User BalanceCheck(int UserID)
+        public void BalanceCheck(int UserID)
         {
             conn.Open();
             string BalanceCheckQuery = " SELECT TotAmount FROM Bank where UserID = " + UserID;
             MySqlCommand view = new MySqlCommand(BalanceCheckQuery, conn);
             MySqlDataReader reader = view.ExecuteReader();
             int[] Balance = new int[1];
-            User user2 = new User();
             while (reader.Read())
             {
                 Balance[0] = reader.GetInt32(0);
             }
             conn.Close();
             Console.WriteLine("Your Balance is : " + Balance[0]);
-            return user2;
         }
 
         public void Deposit(int UserID, int DepositAmount)
-        {            
+        {
             string selectBankQuery = "SELECT TotAmount FROM Bank WHERE UserID =" + UserID;
             MySqlCommand view = new MySqlCommand(selectBankQuery, conn);
             conn.Open();
-            MySqlDataReader reader = view.ExecuteReader();            
+            MySqlDataReader reader = view.ExecuteReader();
             if (reader.Read())
             {
                 int[] TotAmount = new int[1];
@@ -68,9 +70,9 @@ namespace Database1.DAO
                 TotAmount[0] = TotAmount[0] + DepositAmount;
                 conn.Close();
                 UpdateAmount(UserID, TotAmount[0]);
-                InsertDepositTrans(UserID, TotAmount[0]);
+                InsertDepositTrans(UserID, DepositAmount);
 
-            }                  
+            }
         }
 
         public void PINChange(int UserID, int NewPIN)
@@ -80,8 +82,7 @@ namespace Database1.DAO
             conn.Open();
             MySqlDataReader reader = updateCommand.ExecuteReader();
             conn.Close();
-            Console.WriteLine("You Changed your PIN Successfully...");
-         }
+        }
 
         public void Withdraw(int UserID, int WithdrawAmount)
         {
@@ -99,7 +100,7 @@ namespace Database1.DAO
                     TotAmount[0] = TotAmount[0] - WithdrawAmount;
                     Console.WriteLine(TotAmount[0]);
                     UpdateAmount(UserID, TotAmount[0]);
-                    InsertWithdrawTrans(UserID, TotAmount[0]);
+                    InsertWithdrawTrans(UserID, WithdrawAmount);
 
                 }
             }
@@ -116,7 +117,7 @@ namespace Database1.DAO
 
         public void InsertDepositTrans(int UserID, int TotAmount)
         {
-            string selectTransQuery = "SELECT AccountNo from Trans Where UserID=" +UserID;
+            string selectTransQuery = "SELECT AccountNo from Trans Where UserID=" + UserID;
             MySqlCommand view = new MySqlCommand(selectTransQuery, conn);
             conn.Open();
             MySqlDataReader reader = view.ExecuteReader();
@@ -126,8 +127,9 @@ namespace Database1.DAO
                 AccountNo[0] = reader.GetInt32(0);
             }
             conn.Close();
-            string InsertTransQuery = "INSERT INTO Trans (CD,Amount,AccountNo,UserID) VALUES (1,"+TotAmount+","+AccountNo[0]+","+UserID+")";
+            string InsertTransQuery = "INSERT INTO Trans (CD,Amount,AccountNo,UserID,Dated) VALUES ('C'," + TotAmount + "," + AccountNo[0] + "," + UserID + ",@DATE)";
             MySqlCommand updateCommand = new MySqlCommand(InsertTransQuery, conn);
+            updateCommand.Parameters.AddWithValue("@DATE", DateTime.Now);
             conn.Open();
             int RowCount = updateCommand.ExecuteNonQuery();
             conn.Close();
@@ -145,8 +147,9 @@ namespace Database1.DAO
                 AccountNo[0] = reader.GetInt32(0);
             }
             conn.Close();
-            string InsertTransQuery = "INSERT INTO Trans (CD,Amount,AccountNo,UserID) VALUES (0," + TotAmount + "," + AccountNo[0] + "," + UserID + ")";
+            string InsertTransQuery = "INSERT INTO Trans (CD,Amount,AccountNo,UserID) VALUES ('D'," + TotAmount + "," + AccountNo[0] + "," + UserID + ",@DATE)";
             MySqlCommand updateCommand = new MySqlCommand(InsertTransQuery, conn);
+            updateCommand.Parameters.AddWithValue("@DATE", DateTime.Now);
             conn.Open();
             int RowCount = updateCommand.ExecuteNonQuery();
             conn.Close();
@@ -159,23 +162,24 @@ namespace Database1.DAO
             conn.Open();
             Int64 n = (Int64)countCommand.ExecuteScalar();
             User[] Tran1 = new User[n];
-            string TransLogQuery = "SELECT TransID, CD, Amount, AccountNo, UserID FROM Trans WHERE UserID = " + UserID;
+            string TransLogQuery = "SELECT TransID, CD, Amount, AccountNo, UserID, Dated FROM Trans WHERE UserID = " + UserID;
             MySqlCommand selectCommand = new MySqlCommand(TransLogQuery, conn);
             MySqlDataReader reader = selectCommand.ExecuteReader();
-            Console.WriteLine("  TranID     CD     Amount      AccountNo");
+            Console.WriteLine("  TranID     CD     Amount      AccountNo      Date");
             while (reader.Read())
             {
                 User Tran = new User();
                 Tran.TransID = reader.GetInt32(0);
-                Tran.CD = reader.GetInt32(1);
+                Tran.CD = reader.GetString(1);
                 Tran.Amount = reader.GetInt32(2);
                 Tran.AccountNo = reader.GetInt32(3);
+                Tran.Dated = reader.GetString(5);
                 Tran1[i] = Tran;
-                Console.WriteLine("  " + Tran.TransID + "      " + Tran.CD + "      " + Tran.Amount + "      " + Tran.AccountNo);
+                Console.WriteLine("  " + Tran.TransID + "      " + Tran.CD + "      " + Tran.Amount + "        " + Tran.AccountNo+"       "+Tran.Dated);
                 i++;
             }
             conn.Close();
             return Tran1;
-        }        
+        }
     }
 }

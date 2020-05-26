@@ -5,6 +5,7 @@ using System.Data;
 using MySql.Data.MySqlClient;
 using Database1.DAO;
 using Database1.Model;
+using System.Collections.Generic;
 
 namespace Database1.Banks
 {
@@ -43,8 +44,25 @@ namespace Database1.Banks
                 Console.Write("UserID: ");
                 UserID = Convert.ToInt32(Console.ReadLine());
                 Console.Write("PIN: ");
-                PIN = Convert.ToInt32(Console.ReadLine());
+                string pass = "";
+                ConsoleKeyInfo key;
+                do
+                {
+                    key = Console.ReadKey(true);
+                    if (key.Key != ConsoleKey.Backspace)
+                    {
+                        pass += key.KeyChar;
+                        Console.Write("*");
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                while (key.Key != ConsoleKey.Enter);
+                PIN = Convert.ToInt32(pass);
                 User User1 = this.accountdao.Login(UserID, PIN);
+                Console.Beep();
                 if (User1.UserID != 0)
                 {
                     Console.Clear();
@@ -61,6 +79,7 @@ namespace Database1.Banks
                                 Console.Write("Enter the amount to Deposit: ");
                                 DepositAmount = Convert.ToInt32(Console.ReadLine());
                                 this.accountdao.Deposit(UserID, DepositAmount);
+                                Console.Beep();
                                 Console.WriteLine("Deposit is Successful !");
                             }
                             catch (Exception e)
@@ -77,8 +96,13 @@ namespace Database1.Banks
                                 if (WithdrawAmount > 0)
                                 {
                                     this.accountdao.Withdraw(UserID, WithdrawAmount);
+                                    Console.Beep();
                                     Console.WriteLine("Withdraw is Successful !");
 
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Enter a large Amount !");
                                 }
                             }
                             catch (Exception e)
@@ -89,12 +113,14 @@ namespace Database1.Banks
                         case 3:
                             try
                             {
-                                Console.Write("Enter the UserID to which Amount must be transferd :");
+                                Console.Write("Enter the UserID to Transfer:");
                                 UserID2 = Convert.ToInt32(Console.ReadLine());
                                 Console.Write("Enter the Amount to transfer :");
                                 ToAmount = Convert.ToInt32(Console.ReadLine());
                                 this.accountdao.Withdraw(UserID, ToAmount);
                                 this.accountdao.Deposit(UserID2, ToAmount);
+                                Console.Beep();
+                                Console.WriteLine("Amount transfered !");
                             }
                             catch (Exception e)
                             {
@@ -104,7 +130,8 @@ namespace Database1.Banks
                         case 4:
                             try
                             {
-                                User User2 = this.accountdao.BalanceCheck(UserID);
+                                this.accountdao.BalanceCheck(UserID);
+                                Console.Beep();
                             }
                             catch (Exception e)
                             {
@@ -121,6 +148,8 @@ namespace Database1.Banks
                                 Console.Write("Enter the NewPIN: ");
                                 NewPIN = Convert.ToInt32(Console.Read());
                                 this.accountdao.PINChange(UserID, NewPIN);
+                                Console.Beep();
+                                Console.WriteLine("You Changed your PIN Successfully...");
                             }
                             catch (Exception e)
                             {
@@ -129,17 +158,18 @@ namespace Database1.Banks
                             break;
 
                         case 7:
+                            Console.Beep();
                             Console.WriteLine("You Logged out Successfully!");
                             break;
                         default:
+                            Console.Beep();
                             Console.WriteLine("Enter a Vaild Input!");
                             break;
-
                     }
-                    MainAtm();
                 }
                 else
                 {
+                    Console.Beep();
                     Console.WriteLine("Incorrect UserID or Password!!!");
                 }
             }
@@ -149,35 +179,5 @@ namespace Database1.Banks
             }
 
         }
-        public static void Deposit(User currentuser)
-        {
-           
-        }
-
-        public static void Withdraw()
-        {
-
-        }
-
-        public static void Transfer()
-        {
-
-        }
-
-        public void CheckBalance(User currentuser)
-        {
-           
-        }
-
-        public static void Transaction()
-        {
-
-        }
-
-        public static void ChangePin()
-        {
-
-        }
-
     }
 }
