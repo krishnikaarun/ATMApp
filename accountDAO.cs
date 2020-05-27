@@ -6,7 +6,6 @@ using MySql.Data.MySqlClient;
 using Database1.DAO;
 using Database1.Model;
 using Microsoft.Extensions.Configuration;
-using System.IO;
 
 namespace Database1.DAO
 {
