@@ -168,16 +168,15 @@ namespace Database1.DAO
             Console.WriteLine("  TranID     CD     Amount      AccountNo      Date");
             while (reader.Read())
             {
-                User Tran = new User
-                {
-                    TransID = reader.GetInt32(0),
-                    CD = reader.GetString(1),
-                    Amount = reader.GetInt32(2),
-                    AccountNo = reader.GetInt32(3),
-                    Dated = reader.GetString(5)
-                };
+                User user = new User();
+                User Tran = user;
+                Tran.TransID = reader.GetInt32(0);
+                Tran.CD = reader.GetString(1);
+                Tran.Amount = reader.GetInt32(2);
+                Tran.AccountNo = reader.GetInt32(3);
+                Tran.Dated = reader.GetString(5);
                 Tran1[i] = Tran;
-                Console.WriteLine("  " + Tran.TransID + "      " + Tran.CD + "      " + Tran.Amount + "        " + Tran.AccountNo+"       "+Tran.Dated);
+                Console.WriteLine("  " + Tran.TransID + "      " + Tran.CD + "      " + Tran.Amount + "        " + Tran.AccountNo + "       " + Tran.Dated);
                 i++;
             }
             conn.Close();
