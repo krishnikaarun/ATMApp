@@ -11,8 +11,8 @@ namespace Database1.DAO
 {
     public class AccountDAO
     {
-        MySqlConnection conn;
-        string myConnectionString;
+        public MySqlConnection conn;
+        public string myConnectionString;
         public AccountDAO()
         {
             IConfiguration Configuration = new ConfigurationBuilder()
@@ -21,9 +21,7 @@ namespace Database1.DAO
             .Build();
             var section = Configuration.GetSection("ConnectionString");
             myConnectionString = section.Value;
-            conn = new MySqlConnection();
             conn.ConnectionString = myConnectionString;
-        
         }
         public User Login(int UserID, int PIN)
 
@@ -66,11 +64,10 @@ namespace Database1.DAO
             {
                 int[] TotAmount = new int[1];
                 TotAmount[0] = reader.GetInt32(0);
-                TotAmount[0] = TotAmount[0] + DepositAmount;
+                TotAmount[0] += DepositAmount;
                 conn.Close();
                 UpdateAmount(UserID, TotAmount[0]);
                 InsertDepositTrans(UserID, DepositAmount);
-
             }
         }
 
@@ -79,7 +76,7 @@ namespace Database1.DAO
             string NewPINChangeQuery = "UPDATE  Customers SET Pin=" + NewPIN + " where UserID = " + UserID;
             MySqlCommand updateCommand = new MySqlCommand(NewPINChangeQuery, conn);
             conn.Open();
-            MySqlDataReader reader = updateCommand.ExecuteReader();
+            updateCommand.ExecuteReader();
             conn.Close();
         }
 
@@ -96,11 +93,10 @@ namespace Database1.DAO
                 conn.Close();
                 if (WithdrawAmount <= TotAmount[0])
                 {
-                    TotAmount[0] = TotAmount[0] - WithdrawAmount;
+                    TotAmount[0] -= WithdrawAmount;
                     Console.WriteLine(TotAmount[0]);
                     UpdateAmount(UserID, TotAmount[0]);
                     InsertWithdrawTrans(UserID, WithdrawAmount);
-
                 }
             }
         }
@@ -110,7 +106,7 @@ namespace Database1.DAO
             string UpdateQuery = "UPDATE  Bank SET TotAmount =" + TotAmount + " where UserID = " + UserID;
             MySqlCommand updateCommand = new MySqlCommand(UpdateQuery, conn);
             conn.Open();
-            int RowCount = updateCommand.ExecuteNonQuery();
+            updateCommand.ExecuteNonQuery();
             conn.Close();
         }
 
@@ -130,7 +126,7 @@ namespace Database1.DAO
             MySqlCommand updateCommand = new MySqlCommand(InsertTransQuery, conn);
             updateCommand.Parameters.AddWithValue("@DATE", DateTime.Now);
             conn.Open();
-            int RowCount = updateCommand.ExecuteNonQuery();
+            updateCommand.ExecuteNonQuery();
             conn.Close();
         }
 
@@ -150,9 +146,10 @@ namespace Database1.DAO
             MySqlCommand updateCommand = new MySqlCommand(InsertTransQuery, conn);
             updateCommand.Parameters.AddWithValue("@DATE", DateTime.Now);
             conn.Open();
-            int RowCount = updateCommand.ExecuteNonQuery();
+            updateCommand.ExecuteNonQuery();
             conn.Close();
         }
+
         public User[] Transact(int UserID)
         {
             int i = 0;
@@ -167,12 +164,14 @@ namespace Database1.DAO
             Console.WriteLine("  TranID     CD     Amount      AccountNo      Date");
             while (reader.Read())
             {
-                User Tran = new User();
-                Tran.TransID = reader.GetInt32(0);
-                Tran.CD = reader.GetString(1);
-                Tran.Amount = reader.GetInt32(2);
-                Tran.AccountNo = reader.GetInt32(3);
-                Tran.Dated = reader.GetString(5);
+                User Tran = new User
+                {
+                    TransID = reader.GetInt32(0),
+                    CD = reader.GetString(1),
+                    Amount = reader.GetInt32(2),
+                    AccountNo = reader.GetInt32(3),
+                    Dated = reader.GetString(5)
+                };
                 Tran1[i] = Tran;
                 Console.WriteLine("  " + Tran.TransID + "      " + Tran.CD + "      " + Tran.Amount + "        " + Tran.AccountNo+"       "+Tran.Dated);
                 i++;

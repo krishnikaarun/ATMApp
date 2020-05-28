@@ -8,7 +8,7 @@ namespace Database1
 {
     public static class Program
     {
-        static void Main(string[] args)
+        public static void Main()
         {
             //To Bank Program   
             Console.Beep();
@@ -17,7 +17,6 @@ namespace Database1
             Console.ReadKey();
         }
     }
-
 }
 
 

@@ -12,7 +12,7 @@ namespace Database1.Banks
     public class Bank
     {
         public int UserID = 0, PIN = 0, UserName = 0, UserID2 = 0, ToAmount = 0;
-        AccountDAO accountdao;
+        public AccountDAO accountdao;
         public Bank()
         {
             this.accountdao = new AccountDAO();
@@ -98,7 +98,6 @@ namespace Database1.Banks
                                     this.accountdao.Withdraw(UserID, WithdrawAmount);
                                     Console.Beep();
                                     Console.WriteLine("Withdraw is Successful !");
-
                                 }
                                 else
                                 {
@@ -177,7 +176,6 @@ namespace Database1.Banks
             {
                 Console.WriteLine(e.Message);
             }
-
         }
     }
 }
