@@ -13,10 +13,12 @@ namespace Database1.Banks
     {
         public int UserID = 0, PIN = 0, UserName = 0, UserID2 = 0, ToAmount = 0;
         public AccountDAO accountdao;
+
         public Bank()
         {
             this.accountdao = new AccountDAO();
         }
+
         public static void HomePage()
         {
             DateTime now = DateTime.Now;

@@ -13,6 +13,7 @@ namespace Database1.DAO
     {
         public MySqlConnection conn;
         public string myConnectionString;
+
         public AccountDAO()
         {
             IConfiguration Configuration = new ConfigurationBuilder()
@@ -25,8 +26,8 @@ namespace Database1.DAO
             conn = mySqlConnection;
             conn.ConnectionString = myConnectionString;
         }
-        public User Login(int UserID, int PIN)
 
+        public User Login(int UserID, int PIN)
         {
             conn.Open();
             string selectloginQuery = " SELECT  UserID, UserName  FROM Customers where UserID = " + UserID + " AND PIN = " + PIN;
@@ -41,6 +42,7 @@ namespace Database1.DAO
             conn.Close();
             return user1;
         }
+
         public void BalanceCheck(int UserID)
         {
             conn.Open();
