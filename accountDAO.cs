@@ -98,7 +98,6 @@ namespace Database1.DAO
                 if (WithdrawAmount <= TotAmount[0])
                 {
                     TotAmount[0] -= WithdrawAmount;
-                    Console.WriteLine(TotAmount[0]);
                     UpdateAmount(UserID, TotAmount[0]);
                     InsertWithdrawTrans(UserID, WithdrawAmount);
                 }
@@ -146,7 +145,7 @@ namespace Database1.DAO
                 AccountNo[0] = reader.GetInt32(0);
             }
             conn.Close();
-            string InsertTransQuery = "INSERT INTO Trans (CD,Amount,AccountNo,UserID) VALUES ('D'," + TotAmount + "," + AccountNo[0] + "," + UserID + ",@DATE)";
+            string InsertTransQuery = "INSERT INTO Trans (CD,Amount,AccountNo,UserID,Dated) VALUES ('D'," + TotAmount + "," + AccountNo[0] + "," + UserID + ",@DATE)";
             MySqlCommand updateCommand = new MySqlCommand(InsertTransQuery, conn);
             updateCommand.Parameters.AddWithValue("@DATE", DateTime.Now);
             conn.Open();
