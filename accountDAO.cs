@@ -21,6 +21,8 @@ namespace Database1.DAO
             .Build();
             var section = Configuration.GetSection("ConnectionString");
             myConnectionString = section.Value;
+            MySqlConnection mySqlConnection = new MySqlConnection();
+            conn = mySqlConnection;
             conn.ConnectionString = myConnectionString;
         }
         public User Login(int UserID, int PIN)
